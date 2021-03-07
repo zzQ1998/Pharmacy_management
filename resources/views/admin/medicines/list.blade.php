@@ -27,12 +27,24 @@
     <div class="x-body">
       <xblock>
         <div class="layui-row">
-          <div class="layui-col-md4">
+          <div class="layui-col-md3">
             <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
             <button class="layui-btn" onclick="xadmin.open('添加药品','{{ url('admin/medicines/create') }}',500,600)"><i class="layui-icon"></i>添加药品</button>
-            <button class="layui-btn" onclick="xadmin.open('批量添加','{{ url('admin/medicines/create') }}',500,600)"><i class="layui-icon"></i>批量增加</button>
           </div>
-          <div class="layui-col-md8">
+          <div class="layui-col-md3">
+            <form class="layui-form layui-col-space6" name="excel"  id="excel_form"  method="get">
+              {{ csrf_field() }}
+              <div class="layui-input-block layui-upload">
+                <input type="hidden" id="img1" class="hidden" name="art_thumb" value="">
+                <button type="button" class="layui-btn" id="excelbtn">
+                    <i class="layui-icon">&#xe67c;</i>批量添加
+                </button>
+                <input type="file" name="excel" id="excel_upload" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none;" />
+            </div>
+            </form>
+          </div>
+
+          <div class="layui-col-md6">
             <form class="layui-form layui-col-space6" name="sreach"  id="sreach"  method="get" action="{{ url('admin/medicines') }}">
               <div class="layui-inline layui-show-xs-block">
                   <input type="text" name="seachCont" value="" placeholder="输入药品编号或药品名称" autocomplete="off" class="layui-input">
@@ -92,7 +104,7 @@
 
               </td>
               <td class="td-manage" style="text-align: center;">
-                <a title="添加库存"  onclick="xadmin.open('添加药品库存','{{ url('admin/medicines/editnum/'.$v['id'].'&'.$v['num']) }}',500,300)" href="javascript:;">
+                <a title="添加库存"  onclick="xadmin.open('添加药品库存','{{ url('admin/medicines/editnum/'.$v['id'].'&'.$v['num'].'&'.$v['price'].'&'.$v['medicines_id']) }}',500,300)" href="javascript:;">
                   <i class="layui-icon" style="font-weight: bold"></i>
                 </a>
                 <a title="编辑" onclick="xadmin.open('药品信息编辑','{{ url('admin/medicines/'.$v['id'].'/edit') }}',400,600,true)" href="javascript:;">
@@ -137,6 +149,42 @@
             document.sreach.action ="{{ url('admin/medicines') }}";
             $('#sreach').submit();
         });
+
+            //点击批量添加按钮，触发事件；
+            $('#excelbtn').on('click',function () {
+                $('#excel_upload').trigger('click');
+                $('#excel_upload').on('change',function () {//内容改变触发该方法
+                    var obj = this;
+                    var formData = new FormData($('#excel_form')[0]);//将id为art_form的表单中的数据打包起来，放到formData变量中。
+                    $.ajax({
+                        url: '/admin/medicines/addexcel',
+                        type: 'post',
+                        data: formData,
+                        // 因为data值是FormData对象，不需要对数据做处理
+                        processData: false,
+                        contentType: false,
+                        success: function(data){//接收返回值，并判断
+                          //弹层提示添加成功，并刷新父页面
+                          if(data.status==0){
+                            layer.alert(data.message,{icon:6},function(){
+                                parent.location.reload(true);//刷新父页面
+                            });
+                          }else{
+                            layer.alert(data.message,{icon:5});
+                          }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                var number = XMLHttpRequest.status;
+                                var info = "错误号"+number+"文件上传失败!";
+                                alert(info);
+                        },
+                          async: true
+                    });
+            });
+        });
+
+
+
 
       });
 

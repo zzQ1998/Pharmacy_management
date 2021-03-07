@@ -113,8 +113,10 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin','middleware'=>['isLogin',
     Route::post('medicines/up/{id}','MedicinesController@up');
     Route::post('medicines/down/{id}','MedicinesController@down');
     Route::post('medicines/recover/{id}','MedicinesController@recover');
-    Route::get('medicines/editnum/{id}&{num}','MedicinesController@editNum');
+    Route::get('medicines/editnum/{id}&{num}&{price}&{medicines_id}','MedicinesController@editNum');
     Route::post('medicines/addnum','MedicinesController@addNum');
+    Route::post('medicines/addexcel','MedicinesController@addExcel');
+
     Route::resource('medicines', 'MedicinesController');
 
 

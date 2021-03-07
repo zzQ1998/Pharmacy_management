@@ -18,6 +18,9 @@ use Carbon\Carbon;
 use Image;//引用图片组件
 use Storage;
 use Redis;
+use App\Http\Libraries\ExcelUtil\export;
+use App\Http\Libraries\ExcelUtil\import;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 
 class MedicinesController extends Controller
@@ -244,19 +247,30 @@ class MedicinesController extends Controller
     }
 
     //跳转增加药品库存页面
-    public function editNum($id,$num){
-        return view('admin.medicines.addNum',compact('id','num'));
+    public function editNum($id,$num,$price,$medicines_id){
+        return view('admin.medicines.addNum',compact('id','num','price','medicines_id'));
     }
 
     //增加药品库存方法
     public function addNum(Request $request){
         $input = $request->all();
-        $id = $input['id'];
-        $num = $input['num'];
-        $addnum = $input['addnum'];
-        $res = \DB::table('pharmacy_medicines')->where('id','=',$id)->update(['num'=>$num+$addnum]);
+        $user_id = session('user')->user_id;//用户ID
+        $id = $input['id'];//药品ID
+        $medicines_id = $input['medicines_id'];
+        $price = $input['price'];//单价
+        $num = $input['num'];//原来的库存
+        $addnum = $input['addnum'];//增加库存
+        $create_at = Carbon::now()->getPreciseTimestamp(0);//获得当前时间的10位时间戳
+        \DB::beginTransaction();//事务开启
+        try {
+            $res = \DB::table('pharmacy_medicines')->where('id','=',$id)->update(['num'=>$num+$addnum]);
+            $meds = \DB::table('pharmacy_medicines_entry_sell')->insert(['user_id'=>$user_id,'medicines_id'=>$medicines_id,'trade_state'=>1,'num'=>$addnum,'total_price'=>$addnum*$price,'create_time'=>$create_at]);
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+        }
         //进行判断返回数据
-        if($res){
+        if($res&&$meds){
             $meds = \DB::select("select id,medicines_id,medicines_name,company,`describe`,num,a.cate_id,cate_name,small_pic,price,sales,is_marketable,cate_pid,deleted_at from pharmacy_medicines a left join pharmacy_category b on a.cate_id=b.cate_id where id = '" .$id."'");
             $meds = json_decode(json_encode($meds), true);
             $meds =$meds[0];
@@ -264,7 +278,6 @@ class MedicinesController extends Controller
             Redis::del($this->hashkey.$id);
             //将药品内容添加到hashkey变量中
             Redis::hmset($this->hashkey.$id,$meds);
-
             $data = [
                 'status'=>0,
                 'message'=>'库存添加成功!'
@@ -276,6 +289,49 @@ class MedicinesController extends Controller
             ];
         }
         return $data;
+    }
+
+    //批量添加药品
+    public function addExcel(Request $request){
+        $user_id = session('user')->user_id;//用户ID
+        $create_at = Carbon::now()->getPreciseTimestamp(0);//获得当前时间的10位时间戳
+        $file =$request->file('excel');
+        $delTitle = 1;//指定头行数  删除它
+        $excel = new import($delTitle);
+        Excel::import($excel, $file->getRealPath());
+        $data = $excel->data;
+        \DB::beginTransaction();
+        try {
+            foreach ($data as $v) {
+                $isMid = Medicines::where('medicines_id',$v[0])->first();
+                if($isMid){
+                    \DB::table('pharmacy_medicines')->where('medicines_id','=',$v[0])->update(['num'=>$isMid->num+$v[4]]);
+                }else{
+                    Medicines::create(['medicines_id'=>$v[0],'medicines_name'=>$v[1],'company'=>$v[2],'describe'=>$v[3],'num'=>$v[4],'cate_id'=>$v[5],'small_pic'=>$v[6],'price'=>$v[7]]);
+                }
+                $meds = \DB::table('pharmacy_medicines_entry_sell')->insert(['user_id'=>$user_id,'medicines_id'=>$v[0],'trade_state'=>1,'num'=>$v[4],'total_price'=>$v[4]*$v[7],'create_time'=>$create_at]);
+            }
+            \DB::commit();
+            $a = 0;
+        } catch (Exception $e) {
+            \DB::rollBack();
+            $a = 1;
+        }
+        if($a==0){
+            Redis::flushall();//清空redis
+            $data = [
+                'status'=>0,
+                'message'=>'药品进库成功!'
+            ];
+        }else{
+            $data = [
+                'status'=>1,
+                'message'=>'药品进库失败!'
+            ];
+        }
+        return $data;
+
+
     }
 
     //药品上架

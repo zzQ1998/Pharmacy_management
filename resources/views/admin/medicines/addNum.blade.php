@@ -22,7 +22,9 @@
                     </label>
                     <div class="layui-input-inline">
                         <input type="hidden" name="id" value="{{$id}}">
+                        <input type="hidden" name="medicines_id" value="{{$medicines_id}}">
                         <input type="hidden" name="num" value="{{$num}}">
+                        <input type="hidden" name="price" value="{{$price}}">
                         <input type="text" id="addnum" name="addnum" required="" lay-verify="required" autocomplete="off" class="layui-input">
                     </div>
                 </div>
