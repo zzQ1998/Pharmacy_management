@@ -19,103 +19,48 @@
         <a href="">首页</a>
         <a href="">药品管理</a>
         <a>
-          <cite>药品列表</cite></a>
+          <cite>药品采购申请列表</cite></a>
       </span>
       <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
     </div>
     <div class="x-body">
-      <xblock>
-        <div class="layui-row">
-          <div class="layui-col-md3">
-            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-            <button class="layui-btn" onclick="xadmin.open('填写申请码','{{ url('admin/medicines/subexprice') }}',500,300)"><i class="layui-icon"></i>添加药品</button>
-          </div>
-          <div class="layui-col-md3">
-            <form class="layui-form layui-col-space6" name="excel"  id="excel_form"  method="get">
-              {{ csrf_field() }}
-              <div class="layui-input-block layui-upload">
-                <input type="hidden" id="img1" class="hidden" name="art_thumb" value="">
-                <button type="button" class="layui-btn" id="excelbtn">
-                    <i class="layui-icon">&#xe67c;</i>批量添加
-                </button>
-                <input type="file" name="excel" id="excel_upload" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none;" />
-            </div>
-            </form>
-          </div>
 
-          <div class="layui-col-md6">
-            <form class="layui-form layui-col-space6" name="sreach"  id="sreach"  method="get" action="{{ url('admin/medicines') }}">
-              <div class="layui-inline layui-show-xs-block">
-                  <input type="text" name="seachCont" value="" placeholder="输入药品编号或药品名称" autocomplete="off" class="layui-input">
-              </div>
-              <div class="layui-inline layui-show-xs-block">
-                  <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
-              </div>
-            </form>
-          </div>
-
-
-        </div>
-
-      </xblock>
       <div class="layui-card-body layui-table-body layui-table-main">
         <table class="layui-table layui-form" id="test" lay-filter="demo">
           <thead>
             <tr>
-              <th style="text-align: center;">
-                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">
-              </th>
-              <th style="text-align: center; font-weight:bold;">ID</th>
-              <th style="text-align: center; font-weight:bold;">药品编号</th>
+              <th style="text-align: center; font-weight:bold;">编号</th>
+              <th style="text-align: center; font-weight:bold;">销售员工</th>
               <th style="text-align: center; font-weight:bold;">药品图片</th>
               <th style="text-align: center; font-weight:bold;">药品名称</th>
               <th style="text-align: center; font-weight:bold;">药品类别</th>
-              <th style="text-align: center; font-weight:bold;">库存</th>
-              <th style="text-align: center; font-weight:bold;">单价</th>
+              <th style="text-align: center; font-weight:bold;">销售量</th>
+              <th style="text-align: center; font-weight:bold;">销售金额</th>
               <th style="text-align: center; font-weight:bold;">状态</th>
-              <th style="text-align: center; font-weight:bold;">操作</th>
+              <th style="text-align: center; font-weight:bold;">日期</th>
             </tr>
           </thead>
           <tbody>
           @foreach($meds as $v)
-            @if ($v['deleted_at']==0)
             <tr>
-              <td style="text-align: center; font-weight:bold;">
-              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id="{{ $v['id'] }}"><i class="layui-icon layui-icon-ok"></i></div>
-              </td>
-              <td style="text-align: center;">{{ $v['id'] }}</td>
-              <td style="text-align: center;">{{ $v['medicines_id'] }}</td>
-              <td style="text-align: center;"><img src="{{ $v['small_pic'] }}" width="80px" height="60px"/></td>
-              <td style="text-align: center;">{{ $v['medicines_name'] }}</td>
-                @foreach ($allCate as $c)
-                  @if ($c->cate_id==$v['cate_pid'])
-                    <td style="text-align: center;"><span style="font-weight: bold">{{ $c->cate_name.' >>'}}</span></br>{{ $v['cate_name'] }}</td>
-                  @endif
-                @endforeach
-              <td style="text-align: center;">{{ $v['num'] }}</td>
-              <td style="text-align: center;">{{ $v['price'] }}</td>
+              {{--  <td style="text-align: center;">{{ $v->id }}</td>  --}}
+              <td style="text-align: center;">{{ $loop->iteration }}</td>
+              <td style="text-align: center; font-weight:bold;">{{ $v->user_rname }}</td>
+              <td style="text-align: center;"><img src="{{ $v->small_pic }}" width="80px" height="60px"/></td>
+              <td style="text-align: center;">{{ $v->medicines_name }}</td>
+              <td style="text-align: center;">{{ $v->cate_name }}</td>
+              <td style="text-align: center;">{{ $v->num }}件</td>
+              <td style="text-align: center;"><span style="font-weight: bold;color:red;font-size:16px;">￥</span>{{ $v->total_price }}</td>
               <td class="td-status" style="text-align: center;">
-                  @if($v['is_marketable'] == 0)
-                <span class="layui-btn layui-btn-warm layui-btn-mini" @if (Session::get('user')->limit==1) title="点击上架" onclick="up({{ $v['id'] }})" @endif>未上架</span>
-                  @else
-                <span class="layui-btn layui-btn-normal layui-btn-mini" @if (Session::get('user')->limit==1) title="点击下架" onclick="down({{ $v['id'] }})" @endif>已上架</span>
-                  @endif
-
+                @if($v->trade_state==0)
+                  <span class="layui-btn layui-btn-warm layui-btn-mini">销售</span>
+                @else
+                  <span class="layui-btn layui-btn-normal layui-btn-mini">入库</span>
+                @endif
               </td>
-              <td class="td-manage" style="text-align: center;">
-                <a title="添加库存"  onclick="xadmin.open('添加药品库存','{{ url('admin/medicines/editnum/'.$v['id'].'&'.$v['num'].'&'.$v['price'].'&'.$v['medicines_id']) }}',500,300)" href="javascript:;">
-                  <i class="layui-icon" style="font-weight: bold"></i>
-                </a>
-                <a title="编辑" onclick="xadmin.open('药品信息编辑','{{ url('admin/medicines/'.$v['id'].'/edit') }}',400,600,true)" href="javascript:;">
-                  <i class="layui-icon">&#xe642;</i>
-                </a>
-                <a title="删除" onclick="member_del(this,{{ $v['id'] }})" href="javascript:;">
-                  <i class="layui-icon">&#xe640;</i>
-                </a>
-              </td>
+              <td style="text-align: center;">{{ date('Y-m-d H:i:s',$v->create_time)}}</td>
             </tr>
-            @endif
           @endforeach
           </tbody>
         </table>

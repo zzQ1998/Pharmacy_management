@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Cate;
 use App\Model\Medicines;
+use App\Model\Purchase;
 use Carbon\Carbon;
 use Image;//引用图片组件
 use Storage;
@@ -36,7 +37,7 @@ class MedicinesController extends Controller
         // dd($medicines);
         //定义一个变量，存放着所有的药品记录；
         $meds =[];
-        if (Redis::exists($this->listkey)) {
+        if(Redis::exists($this->listkey)) {
             //如果Redis中存在要取的数据，就直接返回
             //$lists中存放着所有要获取药品的id
             if(empty($request->input('seachCont'))){
@@ -111,6 +112,28 @@ class MedicinesController extends Controller
         return view('admin.medicines.add',compact('cates'));
     }
 
+    //打开填写申请码界面
+    public function subExprice(){
+        return view('admin.medicines.exprice');
+    }
+
+    //与数据库中的申请码进行对比
+    public function expriceNum(Request $request){
+        $input = $request->all();
+        $pur = Purchase::where('id',$input['id'])->where('exprice',$input['num'])->first();
+        if($pur){
+            $data = [
+                'status' =>0,
+                'message' =>'提交成功!'
+            ];
+        }else{
+            $data = [
+                'status' => 1,
+                'message' => '申请码错误，请填写正确的申请码!'
+            ];
+        }
+        return $data;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -447,10 +470,11 @@ class MedicinesController extends Controller
         return $data;
     }
 
-    //上传药品图片
+    //修改药品图片
     public function updateImg(Request $request){
         //获取上传 文件/图片
         $file =$request->file('photo');
+        // dd($file);
         // dd($request->input('uid'));
         //判断上传 文件/图片 是否成功（是否有效）
         if (!$file->isValid()) {
@@ -537,7 +561,7 @@ class MedicinesController extends Controller
         $imageHeight = $img->height()*0.3;
         $img->resize($imageWidth, $imageHeight);
         //2.给图片加文字水印；
-        $img->text("@Zer", $imageWidth*0.5, $imageHeight*0.5, function ($font) {
+        $img->text("@ZER", $imageWidth*0.5, $imageHeight*0.5, function ($font) {
             //设置字体类型（可引入字体库）
             $font->file(base_path()."/public/admin/fonts/summer.ttf");//base_path();得到根目录地址
             //设置字体大小
@@ -556,6 +580,5 @@ class MedicinesController extends Controller
         $cont[0] = $res;
         $cont[1] = $newfileName;
         return $cont;
-
     }
 }

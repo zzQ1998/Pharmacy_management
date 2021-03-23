@@ -16,59 +16,47 @@
 </head>
 
 <body>
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">药品管理</a>
+            <a>
+            <cite>提交采购申请</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+    </div>
     <div class="x-body">
-        <form class="layui-form">
+        <form class="layui-form" style="margin-left: 25%;margin-top: 5%;">
             {{ csrf_field() }}
             <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>父级分类
-                </label>
-                <div class="layui-input-inline">
-                    <select name="cate_pid">
-                        <option value="0">==顶级分类==</option>
-                        @foreach($cate as $v)
-                            <option value="{{ $v->cate_id }}">{{ $v->cate_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label for="L_username" class="layui-form-label">
-                    <span class="x-red">*</span>分类名称
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="L_username" name="cate_name" required=""
-                        autocomplete="off" class="layui-input" lay-verify="required">
-                </div>
-            </div>
-            <div class="layui-form-item">
                 <label for="L_catetitle" class="layui-form-label">
-                    <span class="x-red">*</span>分类标题
+                    <span class="x-red">*</span>预计金额
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="L_catetitle" name="cate_title" required=""
+                    <input type="text" id="L_catetitle" name="price" required=""
                         autocomplete="off" class="layui-input" lay-verify="required">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label for="L_cate_order" class="layui-form-label">
-                    <span class="x-red">*</span>排序
+                    <span class="x-red">*</span>预计入库
                 </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="L_cate_order" name="cate_order" required=""
-                        autocomplete="off" class="layui-input" lay-verify="required">
-
+                <div class="layui-inline layui-show-xs-block">
+                    <input type="text" name="time" class="layui-input" id="test1" placeholder="入库预计时间">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label"><span class="x-red">*</span>采购内容</label>
+                <div class="layui-input-block">
+                    <textarea name="content" placeholder="请输入采购内容" class="layui-textarea" style="width: 50%"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label for="L_repass" class="layui-form-label">
                 </label>
                 <button  class="layui-btn" lay-filter="add" lay-submit="">
-                    增加
+                    提交申请
                 </button>
             </div>
     </form>
@@ -86,7 +74,7 @@
                 //发异步，把数据提交给php
                 $.ajax({
                     type:'POST',
-                    url:'/admin/cate',
+                    url:'/admin/purchase',
                     dataType:'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -97,7 +85,7 @@
                         // console.log(data);
                         if(data.status == 0){
                             layer.alert(data.message,{icon:6},function(){
-                                parent.location.reload(true);
+                                location.reload(true);
                             });
                         }else{
                             layer.alert(data.message,{icon:5});
@@ -111,7 +99,16 @@
                 return false;
             });
         });
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+              elem: '#test1' //指定元素
+              ,format: 'yyyy-MM-dd HH:mm:ss' //可任意组合
+            });
+        });
     </script>
-  </body>
+</body>
 
 </html>

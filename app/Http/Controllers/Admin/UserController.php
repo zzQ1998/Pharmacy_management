@@ -45,10 +45,7 @@ class UserController extends Controller
             ->paginate($request->input('num')!=0?$request->input('num'):6);//每次查询的数据条数
 
             $allRole = \DB::select('select * from pharmacy_user_role');//获得 blog_user_role表对象
-            // dd($allRole);
             $role = Role::get();
-        // $user = User::get();
-        // dd($request->all());
         return view('admin.user.list',compact('user','request','allRole','role'));//返回列表页面，并携带user
     }
 

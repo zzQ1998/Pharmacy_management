@@ -17,6 +17,7 @@ use Gregwar\Captcha\PhraseBuilder;
 use Validator;
 use App\Model\User;
 use Illuminate\Support\Facades\Crypt;
+use App\Http\Controllers\Admin\LocationController;
 
 class LoginController extends Controller
 {
@@ -64,7 +65,7 @@ class LoginController extends Controller
         // $validator = Validator::make('需要验证的表单数据','验证规则','错误提示信息');
 
         $rule = [
-            'username'=>'required|between:4,11',//|numeric
+            'username'=>'required|between:4,12',//|numeric
             'password'=>'required|between:4,16',//|alpha_dash
         ];
         $msg = [
@@ -99,7 +100,10 @@ class LoginController extends Controller
             return redirect('admin/login')->with('errors','验证码不正确');
         }
         //4、保存用户信息到session中
+        $local = LocationController::getCity();
+        $local_Str = $local['province']."-".$local['city'];
         session()->put('user',$user);
+        session()->put('local_Str',$local_Str);
         $a=session()->get('user');
         //dd($a->user_name);
         // dd($a->user_rname);

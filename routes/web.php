@@ -116,8 +116,31 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin','middleware'=>['isLogin',
     Route::get('medicines/editnum/{id}&{num}&{price}&{medicines_id}','MedicinesController@editNum');
     Route::post('medicines/addnum','MedicinesController@addNum');
     Route::post('medicines/addexcel','MedicinesController@addExcel');
+    Route::get('medicines/subexprice','MedicinesController@subExprice');
+    Route::post('medicines/expricenum','MedicinesController@expriceNum');
 
     Route::resource('medicines', 'MedicinesController');
+
+    //出入库表路由
+    Route::get('entry/indexout','EntryController@indexOut');
+    Route::resource('entry', 'EntryController');
+
+    //采购申请表
+    Route::get('purchase/purtable/{id}','PurchaseController@purTable');
+    Route::get('purchase/agree/{id}','PurchaseController@purAgree');
+    // Route::get('purchase/create','PurchaseController@purAgree');
+    Route::resource('purchase','PurchaseController');
+
+
+    //统计表路由
+
+    Route::get('datas/echarts1','DataController@echarts1');
+    Route::get('datas/echarts2','DataController@echarts2');
+    Route::get('datas/echarts3','DataController@echarts3');
+    Route::get('datas/echarts4','DataController@echarts4');
+    Route::get('datas/echarts5','DataController@echarts5');
+
+
 
 
     //网站配置模块路由

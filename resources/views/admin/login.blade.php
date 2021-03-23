@@ -86,7 +86,7 @@
         layui.use('form', function () {
             var form = layui.form;
             form.verify({
-                username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                username: function(value, item){ //value：表单的值、item：表单的DOM对象   u4e00-\u9fa5是用来判断是不是中文的一个条件。
                     if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
                         return '用户名不能有特殊字符';
                     }

@@ -281,7 +281,7 @@
 
         });
     }
-    $(function () {//单选框点击事件
+    $(function () {//复选框点击事件
         $(".layui-form-checkbox").click(function(){
             if($(this).hasClass("layui-form-checked")){
                 $(this).removeClass("layui-form-checked");

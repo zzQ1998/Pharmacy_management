@@ -84,6 +84,7 @@
 
                 //监听提交
                 form.on('submit(edit)',function(data) {
+                    //alert(data.field.username);
                     var  uid = $("input[name='uid']").val();
                         //阻止默认提交，发异步，把数据提交给php
                         $.ajax({
@@ -113,15 +114,6 @@
                         return false;
                     });
         });
-    </script>
-    <script>
-        var _hmt = _hmt || [];
-        (function() {
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();
     </script>
 </body>
 
