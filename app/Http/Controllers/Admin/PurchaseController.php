@@ -17,8 +17,14 @@ class PurchaseController extends Controller
      */
     public function index(Request $request)
     {
-        $pur = Purchase::OrderBy('id','asc')
+        if (session('user')->limit==1) {
+            $pur = Purchase::OrderBy('id','asc')
             ->paginate($request->input('num')!=0?$request->input('num'):6);//每次查询的数据条数
+        } else {
+            $pur = Purchase::OrderBy('id','asc')
+            ->where('uid','=', session('user')->user_name)
+            ->paginate($request->input('num')!=0?$request->input('num'):6);//每次查询的数据条数
+        }
 
         return view('admin.entry.purlist',compact('pur','request'));//返回列表页面，并携带user
 

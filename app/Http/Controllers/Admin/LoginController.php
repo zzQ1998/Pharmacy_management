@@ -99,6 +99,14 @@ class LoginController extends Controller
         if( strtolower($input['code'])!= strtolower(session()->get('code'))){//strtolower()将全部字符转化为小写，这样就不区分大小写了;
             return redirect('admin/login')->with('errors','验证码不正确');
         }
+         //4、判断判断账号是否被激活
+        if($user->active!=1){
+            return redirect('admin/login')->with('errors','您的账号未激活!');
+        }
+        //5、判断判断账号是否被禁用
+        if($user->status!=1){
+            return redirect('admin/login')->with('errors','您的账号已被禁用!');
+        }
         //4、保存用户信息到session中
         $local = LocationController::getCity();
         $local_Str = $local['province']."-".$local['city'];

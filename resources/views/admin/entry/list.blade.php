@@ -29,17 +29,34 @@
       <div class="layui-card-body layui-table-body layui-table-main">
         <table class="layui-table layui-form" id="test" lay-filter="demo">
           <thead>
-            <tr>
-              <th style="text-align: center; font-weight:bold;">编号</th>
-              <th style="text-align: center; font-weight:bold;">销售员工</th>
-              <th style="text-align: center; font-weight:bold;">药品图片</th>
-              <th style="text-align: center; font-weight:bold;">药品名称</th>
-              <th style="text-align: center; font-weight:bold;">药品类别</th>
-              <th style="text-align: center; font-weight:bold;">销售量</th>
-              <th style="text-align: center; font-weight:bold;">销售金额</th>
-              <th style="text-align: center; font-weight:bold;">状态</th>
-              <th style="text-align: center; font-weight:bold;">日期</th>
-            </tr>
+            @if ($a == 1)
+            {{-- 入库 --}}
+              <tr>
+                <th style="text-align: center; font-weight:bold;">编号</th>
+                <th style="text-align: center; font-weight:bold;">入库员工</th>
+                <th style="text-align: center; font-weight:bold;">药品图片</th>
+                <th style="text-align: center; font-weight:bold;">药品名称</th>
+                <th style="text-align: center; font-weight:bold;">药品类别</th>
+                <th style="text-align: center; font-weight:bold;">采购量</th>
+                <th style="text-align: center; font-weight:bold;">采购金额</th>
+                <th style="text-align: center; font-weight:bold;">状态</th>
+                <th style="text-align: center; font-weight:bold;">日期</th>
+              </tr>
+            @else
+            {{-- 出库 --}}
+              <tr>
+                <th style="text-align: center; font-weight:bold;">编号</th>
+                <th style="text-align: center; font-weight:bold;">销售员工</th>
+                <th style="text-align: center; font-weight:bold;">药品图片</th>
+                <th style="text-align: center; font-weight:bold;">药品名称</th>
+                <th style="text-align: center; font-weight:bold;">药品类别</th>
+                <th style="text-align: center; font-weight:bold;">销售量</th>
+                <th style="text-align: center; font-weight:bold;">销售金额</th>
+                <th style="text-align: center; font-weight:bold;">状态</th>
+                <th style="text-align: center; font-weight:bold;">日期</th>
+              </tr>
+            @endif
+
           </thead>
           <tbody>
           @foreach($meds as $v)

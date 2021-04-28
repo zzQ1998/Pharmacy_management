@@ -114,7 +114,11 @@
                                         @if ($u->active==1)
                                             <span class="layui-btn layui-btn-normal layui-btn-mini">已激活</span>
                                         @else
-                                            <span class="layui-btn layui-btn-warm layui-btn-mini">未激活</span>
+                                            @if (time()>$u->expire)
+                                                <span class="layui-btn layui-btn-danger layui-btn-mini" onclick="send({{$u->user_id }})" title="点击发送激活链接">已过期</span>
+                                            @else
+                                                <span class="layui-btn layui-btn-warm layui-btn-mini">未激活</span>
+                                            @endif
                                         @endif
                                     </td>
                                     <td class="td-status">
@@ -291,6 +295,20 @@
 
         });
     });
+
+        /*重新发送激活链接*/
+        function up(id){
+            layer.confirm('确认要向员工重新发送激活链接吗？',function(index){
+                $.post('/admin/medicines/up/'+id,{'_method':'post','_token':"{{csrf_token()}}"},function (data) {
+                if(data.status==0){
+                    layer.msg(data.message,{icon:6,time:1000});
+                    location.replace(location.href);
+                }else{
+                    layer.msg(data.message,{icon:5,time:1000});
+                }
+                });
+            });
+        }
 </script>
 
 </html>

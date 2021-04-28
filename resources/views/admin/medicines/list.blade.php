@@ -29,18 +29,23 @@
         <div class="layui-row">
           <div class="layui-col-md3">
             <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+            @if (Session::get('user')->limit==0)
             <button class="layui-btn" onclick="xadmin.open('填写申请码','{{ url('admin/medicines/subexprice') }}',500,300)"><i class="layui-icon"></i>添加药品</button>
+            @endif
+
           </div>
           <div class="layui-col-md3">
             <form class="layui-form layui-col-space6" name="excel"  id="excel_form"  method="get">
               {{ csrf_field() }}
+              @if (Session::get('user')->limit==0)
               <div class="layui-input-block layui-upload">
                 <input type="hidden" id="img1" class="hidden" name="art_thumb" value="">
                 <button type="button" class="layui-btn" id="excelbtn">
                     <i class="layui-icon">&#xe67c;</i>批量添加
                 </button>
                 <input type="file" name="excel" id="excel_upload" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none;" />
-            </div>
+              </div>
+              @endif
             </form>
           </div>
 

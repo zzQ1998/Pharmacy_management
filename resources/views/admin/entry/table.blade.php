@@ -73,7 +73,7 @@
     <TD onclick=_hideEditor() id=Wyzjspd_B3 class=Wyzjspd_4 style="PADDING-LEFT: 11px; LETTER-SPACING: -1px" colSpan=5 value="测试20200120" colNo="2">{{$pur->ename}}</TD></TR>
     <TR style="HEIGHT: 35px" height=35 rn="4">
     <TD onclick=_hideEditor() id=Wyzjspd_A4 class=Wyzjspd_3 style="LETTER-SPACING: -1px" value="职务:" colNo="1">职务:</TD>
-    <TD onclick=_hideEditor() id=Wyzjspd_B4 class=Wyzjspd_4 style="PADDING-LEFT: 11px; LETTER-SPACING: -1px;" colSpan=5  colNo="2">销售</TD></TR>
+    <TD onclick=_hideEditor() id=Wyzjspd_B4 class=Wyzjspd_4 style="PADDING-LEFT: 11px; LETTER-SPACING: -1px;" colSpan=5  colNo="2">药品采购员</TD></TR>
 
     <TR style="HEIGHT: 35px" height=35 rn="8">
     <TD onclick=_hideEditor() id=Wyzjspd_A8 class=Wyzjspd_3 style="LETTER-SPACING: -1px" value="预计金额(元)" colNo="1">预计金额(元)</TD>
@@ -89,15 +89,19 @@
 
 
     <TR style="HEIGHT: 120px" height=120 rn="13">
-    <TD onclick=_hideEditor() id=Wyzjspd_A13 class=Wyzjspd_7 style="PADDING-LEFT: 11px; LETTER-SPACING: -1px;" colSpan=6 value="签批意见: 同意采购该批次药品!" colNo="1">签批意见: <br><span style="margin-left: 30%;font-size:15px;">同意采购该批次药品!</span></TD></TR>
+    <TD onclick=_hideEditor() id=Wyzjspd_A13 class=Wyzjspd_7 style="PADDING-LEFT: 11px; LETTER-SPACING: -1px;" colSpan=6 value="签批意见: 同意采购该批次药品!" colNo="1">签批意见: <br>
+      @if ($pur->state==1)
+        <span style="margin-left: 30%;font-size:15px;">同意采购该批次药品!</span>
+      @endif
+      </TD></TR>
     <TR style="HEIGHT: 29px" height=29 rn="14">
     <TD onclick=_hideEditor() id=Wyzjspd_E14 class=Wyzjspd_2 style="LETTER-SPACING: -1px" colSpan=1>
-    @if ($pur->state==0)
+    @if ($pur->state==0&&Session::get('user')->limit==1)
       <a title="同意" onclick="click_Ok({{ $pur->id }})" href="javascript:;">
       <i class="layui-icon" style="font-weight: bold;font-size:20px;">&#xe62a;</i>
       </a>
-    @else
-      <i class="layui-icon" style="font-weight: bold;font-size:20px;">&#xe62a;</i>
+    {{-- @else
+      <i class="layui-icon" style="font-weight: bold;font-size:20px;">&#xe62a;</i> --}}
     @endif
   </TD>
     <TD onclick=_hideEditor() id=Wyzjspd_A14 class=Wyzjspd_6 style="text-align: right;" colSpan=3 value="签批人：" colNo="2">签批人：</TD>

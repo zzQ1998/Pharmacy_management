@@ -18,7 +18,8 @@ class EntryController extends Controller
         $meds = \DB::select('select a.id,small_pic,medicines_name,cate_name,user_rname,a.num,total_price,trade_state,create_time from pharmacy_medicines_entry_sell a,pharmacy_medicines b,pharmacy_category c,pharmacy_user d where a.medicines_id=b.medicines_id and b.cate_id = c.cate_id and a.user_id=d.user_id and trade_state=? order by create_time desc',[1]);
         //返回一个添加页面
         // dd($meds);
-        return view('admin.entry.list',compact('meds'));
+        $a = 1;
+        return view('admin.entry.list',compact('meds','a'));
     }
 
     //出库表
@@ -27,7 +28,8 @@ class EntryController extends Controller
         //多表联合查询
         $meds = \DB::select('select a.id,small_pic,medicines_name,cate_name,user_rname,a.num,total_price,trade_state,create_time from pharmacy_medicines_entry_sell a,pharmacy_medicines b,pharmacy_category c,pharmacy_user d where a.medicines_id=b.medicines_id and b.cate_id = c.cate_id and a.user_id=d.user_id and trade_state=? order by create_time desc',[0]);
         //返回一个添加页面
-        return view('admin.entry.list',compact('meds'));
+        $a = 0;
+        return view('admin.entry.list',compact('meds','a'));
     }
     /**
      * Show the form for creating a new resource.

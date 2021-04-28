@@ -150,7 +150,7 @@ class UserController extends Controller
         }
         //激活时间是否已经超时
         if(time() > $user->expire){
-            return '激活链接已经超时，请重新注册';
+            return '激活链接已经超时，请联系管理员';
         }
 
         $res = $user->update(['active'=>1]);

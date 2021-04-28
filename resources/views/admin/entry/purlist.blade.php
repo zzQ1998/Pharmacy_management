@@ -41,7 +41,6 @@
             </tr>
           </thead>
           <tbody>
-            @if (Session::get('user')->limit==1)
                 @foreach($pur as $v)
                 <tr onclick="xadmin.open('药品采购申请表','{{ url('admin/purchase/purtable/'.$v->id) }}',600,700,true)">
                   <td style="text-align: center;">{{ $v->id }}</td>
@@ -65,33 +64,7 @@
                   </td>
                 </tr>
               @endforeach
-            @else
-              @foreach($pur as $v)
-                  @if ($v->uid==Session::get('user')->user_name)
-                    <tr onclick="xadmin.open('药品采购申请表','{{ url('admin/purchase/purtable/'.$v->id) }}',600,700,true)">
-                      <td style="text-align: center;">{{ $v->id }}</td>
-                      <td style="text-align: center; font-weight:bold;">{{ $v->ename }}</td>
-                      <td style="text-align: center;">{{ $v->aname }}</td>
-                      <td style="text-align: center;">{{ $v->price }}</td>
-                      <td style="text-align: center;">{{  date('Y-m-d H:i:s',$v->etime) }}</td>
-                      <td style="text-align: center;">{{  date('Y-m-d H:i:s',$v->ctime) }}</td>
-                      @if ($v->stime==0)
-                      <td style="text-align: center;">未审核</td>
-                      @else
-                      <td style="text-align: center;">{{  date('Y-m-d H:i:s',$v->stime) }}</td>
-                      @endif
 
-                      <td class="td-status" style="text-align: center;">
-                        @if($v->state==0)
-                          <span class="layui-btn layui-btn-warm layui-btn-mini">未审核</span>
-                        @else
-                          <span class="layui-btn layui-btn-normal layui-btn-mini">已通过</span>
-                        @endif
-                      </td>
-                    </tr>
-                  @endif
-              @endforeach
-            @endif
           </tbody>
         </table>
       </div>
